@@ -1,6 +1,5 @@
 // src/movies/dto/create-movie.dto.ts
-
-import { IsString, IsInt, IsUrl, Min } from 'class-validator';
+import { IsString, IsInt, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMovieDto {
@@ -12,8 +11,4 @@ export class CreateMovieDto {
   @IsInt()
   @Min(1800, { message: 'Publishing year must be later than 1800' })
   publishingYear: number;
-
-  @ApiProperty({ description: 'The URL of the poster image' })
-  @IsUrl()
-  poster: string;
 }
