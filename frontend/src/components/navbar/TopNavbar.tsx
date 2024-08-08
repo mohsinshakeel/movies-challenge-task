@@ -1,24 +1,22 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { LogoutIcon } from '@/assets/svgs';
+import { LogoutIcon, PlusIcon } from '@/assets/svgs';
 import { getAuthDataSelector } from '@/store/features/auth/authSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import NextImage from '@/components/ui/next-image';
 
-import { Button } from '@/components/ui/button';
 import { useLogoutMutation } from '@/store/features/auth/authApi';
 import { userLoggedOut } from '@/store/features/auth/authSlice';
-import { loginUrl } from '@/configs/constants';
+import { loginUrl, moviesUrl } from '@/configs/constants';
 import { ILayoutProps } from '@/lib/types';
 
 interface ITopNavbar extends ILayoutProps {}
 
-const TopNavbar = ({}: ITopNavbar) => {
+const TopNavbar = ({ showAdd, title }: ITopNavbar) => {
   // redux
   const { user } = useAppSelector(getAuthDataSelector);
-  // rtq
-  const [logout] = useLogoutMutation();
+  //   rtq
+  const [logout, { isLoading, isSuccess }] = useLogoutMutation();
 
   const router = useRouter();
 
@@ -36,25 +34,31 @@ const TopNavbar = ({}: ITopNavbar) => {
     }
   }, [logout, dispatch, router]);
 
+  const handleClickCreate = () => {
+    router.push(`${moviesUrl}create`);
+  };
 
   return (
-    <div className="mx-2 min-h-[70px] flex w-full items-center justify-between">
-      <div className="flex flex-row gap-x-2 items-center justify-center  ">
-        <div className="py-4 flex flex-row justify-center items-center">
-          <div className="border-l-2  border-border flex flex-row items-center cursor-pointer space-x-2 ">
-            <div className="flex flex-col ">
-              <p className="font-medium">{user?.name || 'User Name'}</p>
-              <p className="text-sm text-muted-foreground">
-                {user?.email || 'user@example.com'}
-              </p>
-            </div>
-            <Button
-              className=" rounded-none border-none !outline-none bg-transaparent hover:bg-transaparent !p-0 transition-none"
-              variant={'outline'}
-              onClick={handleLogout}
-            >
-              Logout <LogoutIcon className="w-4 h-4 mr-2" />
-            </Button>
+    <div className="flex w-full items-center justify-end ">
+      <div className="flex flex-row gap-x-2 items-center justify-center  w-full">
+        <div className="py-4 flex flex-row justify-between items-center w-full  ">
+          <div className="flex gap-x-4 items-center justify-center">
+            <p className="text-3xl md:text-5xl tracking-normal leading text-headingColor font-semibold">
+              {title}
+            </p>
+            {showAdd && (
+              <PlusIcon
+                onClick={handleClickCreate}
+                className="cursor-pointer"
+              />
+            )}
+          </div>
+
+          <div className="flex gap-x-2 cursor-pointer items-center justify-center" onClick={handleLogout}>
+            <p className="text-sm md:text-2xl hidden md:flex tracking-normal leading text-headingColor font-semibold">
+              Logout
+            </p>
+            <LogoutIcon  />
           </div>
         </div>
       </div>

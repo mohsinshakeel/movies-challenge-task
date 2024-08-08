@@ -34,7 +34,6 @@ export class UsersService {
                 },
             });
         } else {
-            console.log('sss', emailOrName);
             return await this.usersRepository.findOne({
                 where: {
                     name: ILike(emailOrName),
@@ -130,7 +129,6 @@ export class UsersService {
 
             return new SignUpResponseDto({ ...userData }, token);
         } catch (err) {
-            console.log('err', err);
             throw new HttpException(err, HttpStatus.BAD_REQUEST);
         }
     }

@@ -18,6 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       placeholder = '',
       extraClass,
       shouldFocus,
+      error,
       ...props
     },
     ref
@@ -54,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             className={cn(
               `ml-1 peer w-full h-full text-headingColor font-normal outline outline-0 focus:outline-0 
-                transition-all text-sm px-4 py-2.5 rounded-xl bg-input focus:bg-input `,
+                transition-all text-sm px-4 py-2.5 rounded-xl bg-input focus:bg-input ${error && 'border border-destructive'}`,
               className,
               extraClass
             )}
@@ -65,15 +66,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           <label
-            className="flex w-full h-full select-none pointer-events-none absolute left-2 
-            font-normal !overflow-visible truncate peer-placeholder-shown:text-headingColor 
-            leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-headingColor 
-            transition-all peer-focus:-top-1.5 -top-1.5 peer-disabled:peer-placeholder-shown:-top-[0.9rem] peer-placeholder-shown:-top-[0.5rem] 
-            peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 
-            before:h-2 before:mt-[6.5px] before:mr-1  before:rounded-tl-md  before:pointer-events-none before:transition-all  
-            after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1  
-            after:rounded-tr-md  after:pointer-events-none after:transition-all peer-placeholder-shown:leading-[4.50]
-            text-headingColor peer-focus:text-headingColor "
+            className={`flex w-full h-full select-none pointer-events-none absolute  
+              font-normal !overflow-visible truncate peer-placeholder-shown:text-headingColor 
+              leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-headingColor 
+              transition-all peer-focus:-top-5 left-2 -top-5 peer-disabled:peer-placeholder-shown:-top-[0.9rem] peer-placeholder-shown:-top-[0.5rem] 
+              peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content-[' '] before:block before:box-border before:w-2.5 
+              before:h-2 before:mt-[6.5px] before:mr-1  before:rounded-tl-md  before:pointer-events-none before:transition-all  
+              after:content-[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1  
+              after:rounded-tr-md  after:pointer-events-none after:transition-all peer-placeholder-shown:leading-[4.50]
+              ${error ? 'peer-focus:text-destructive text-destructive' : 'text-headingColor peer-focus:text-headingColor'} `}
           >
             {label}
           </label>

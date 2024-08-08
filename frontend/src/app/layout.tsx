@@ -6,6 +6,7 @@ import '@/styles/tailwind.css';
 
 import StoreProvider from '@/store/store-provider';
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from 'react-hot-toast';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
             shadow="0 0 10px #2299DD,0 0 5px #2299DD"
           />
           {children}
+          <Toaster position='top-center' />
         </body>
       </StoreProvider>
     </html>

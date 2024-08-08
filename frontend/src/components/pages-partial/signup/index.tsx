@@ -12,48 +12,52 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { moviesUrl, signUpUrl } from '@/configs/constants';
+import { loginUrl, moviesUrl } from '@/configs/constants';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useLoginMutation } from '@/store/features/auth/authApi';
-import { SpinnerIcon } from '@/assets/svgs';
+import {
+  useLoginMutation,
+  useSignUpMutation,
+} from '@/store/features/auth/authApi';
+import LoadingDots from '@/components/common/loading-dots';
 import Link from 'next/link';
 
-const loginSchema = z.object({
+const signUpSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
 });
 
-type FormFields = z.infer<typeof loginSchema>;
+type FormFields = z.infer<typeof signUpSchema>;
 
-export const LoginForm = () => {
+export const SignUpForm = () => {
   // form
   const form = useForm<FormFields>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signUpSchema),
   });
 
-  const [login, { isLoading, isSuccess }] = useLoginMutation();
+  const [signup, { isLoading, isSuccess }] = useSignUpMutation();
 
   const router = useRouter();
 
   // states
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
 
   // handlers
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    login(values);
+  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
+    signup(values);
   };
-
-  const handleRememberMe = () => setRememberMe(!rememberMe);
 
   const formFields: Array<{
     name: keyof FormFields;
     label: string;
     type: string;
   }> = [
+    {
+      name: 'name',
+      label: 'Name',
+      type: 'text',
+    },
     {
       name: 'email',
       label: 'Email',
@@ -76,12 +80,12 @@ export const LoginForm = () => {
   return (
     <div className="flex flex-col h-full  w-full md:w-1/3">
       <p className="mt-20 mb-2 text-6xl tracking-normal leading-8 text-center text-headingColor font-bold">
-        Sign In
+        Sign Up
       </p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col w-full mt-11 gap-y-6"
+          className="flex flex-col w-full mt-11 gap-y-8"
         >
           <div className="w-full flex flex-col gap-y-8">
             {formFields.map((field) => (
@@ -109,33 +113,18 @@ export const LoginForm = () => {
               />
             ))}
           </div>
-          <div className="flex justify-center items-center">
-            <div className="flex flex-row gap-2.5 ">
-              <Checkbox
-                checked={rememberMe}
-                onCheckedChange={handleRememberMe}
-              />
-              <Label className="text-sm font-normal text-headingColor">
-                Remember me
-              </Label>
-            </div>
-          </div>
           <Button
             variant="default"
             type="submit"
-            className="w-full"
+            className="w-full mt-2"
             disabled={isLoading}
           >
-            {isLoading ? (
-              <SpinnerIcon className="text-headingColor" />
-            ) : (
-              'LogIn'
-            )}
+            {isLoading ? <LoadingDots /> : 'Signup'}
           </Button>
-          <p className="mb-2 text-sm tracking-normal leading-8 text-center text-headingColor font-normal">
-            Don&apos;t have an account ?
-            <Link href={signUpUrl} className="ml-2 text-primary cursor-pointer">
-              Sign Up
+          <p className="mt-4 mb-2 text-sm tracking-normal leading-8 text-center text-headingColor font-normal">
+            Do you have already an account ?
+            <Link href={loginUrl} className="ml-2 text-primary cursor-pointer">
+              Sign In
             </Link>
           </p>
         </form>
@@ -144,11 +133,11 @@ export const LoginForm = () => {
   );
 };
 
-export default function PartialLogin() {
+export default function PartialSignUp() {
   return (
     <AuthLayout>
       <div className="z-50 flex flex-col items-center justify-center min-h-screen w-full p-4 h-full ">
-        <LoginForm />
+        <SignUpForm />
       </div>
     </AuthLayout>
   );

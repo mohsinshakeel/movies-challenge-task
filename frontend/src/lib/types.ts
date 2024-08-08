@@ -33,15 +33,20 @@ export interface User {
 
 export interface ILayoutProps {
   children?: ReactNode;
-  description?: string;
-  icon?: IconType;
-  backIcon?: boolean;
-  backLink?: string;
+  showAdd?: boolean;
+  title?: string;
 }
 
 export interface IMovie {
-  image?: string;
+  poster?: string;
   title: string;
   id?: string;
-  year?: string;
+  publishingYear?: string;
+}
+
+export interface ICustomError {
+  data: {
+    message: string;
+  },
+  status: number;
 }

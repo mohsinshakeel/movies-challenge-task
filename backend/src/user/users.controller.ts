@@ -27,10 +27,33 @@ export class UsersController {
 
     @Post('register')
     @HttpCode(200)
-    @ApiOperation({ summary: 'Get Your self register' })
+    @ApiOperation({ summary: 'Get Yourself registered' })
     @ApiOkResponse({ type: SignUpResponseDto })
-    register(@Body() createUserDto: SignUpDto): Promise<SignUpResponseDto> {
-        return this.userService.create(createUserDto);
+    async register(
+        @Body() createUserDto: SignUpDto,
+        @Res() res: Response,
+    ): Promise<void> {
+        try {
+            const { token, user } =
+                await this.userService.create(createUserDto);
+
+            // Set the JWT token in a cookie
+            res.cookie('token', token, {
+                httpOnly: true, // Cookie not accessible via JavaScript
+                secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+                maxAge: 3600000, // 1 hour in milliseconds
+                sameSite: 'lax', // Helps prevent CSRF attacks
+            });
+
+            res.status(HttpStatus.OK).json({
+                message: 'Registration successful',
+                user,
+            });
+        } catch (error) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: error.message || 'Registration failed',
+            });
+        }
     }
 
     @Post('login')

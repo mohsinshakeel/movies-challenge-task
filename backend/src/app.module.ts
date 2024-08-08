@@ -1,9 +1,11 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { getDatabaseConfig } from 'db/dataSource';
+
+import { CookieToHeaderMiddleware } from './middlewares/cookie-to-header';
 
 import { Users } from './user/entities/users.entity';
 import { JwtStrategy } from './user/auth/jwt-strategy';
@@ -32,4 +34,8 @@ import { AppService } from './app.service';
     controllers: [AppController],
     providers: [AppService, JwtStrategy],
 })
-export class AppModule {}
+export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(CookieToHeaderMiddleware).forRoutes('*');
+    }
+}

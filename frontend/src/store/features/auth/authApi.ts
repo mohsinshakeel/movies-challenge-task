@@ -1,11 +1,10 @@
 import toast from 'react-hot-toast';
-
 import { apiSlice } from '../api/apiSlice';
 import { userLoggedIn } from './authSlice';
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // login endpoint here
+    // login endpoint
     login: builder.mutation({
       query: (data) => ({
         url: 'users/login',
@@ -19,18 +18,19 @@ export const authApi = apiSlice.injectEndpoints({
           // setting logged data to redux state
           dispatch(
             userLoggedIn({
-              user: result.data.data.user,
+              user: result.data.user,
             })
           );
 
           toast.success(result.data.message);
         } catch (error: any) {
-          toast.error(error?.error?.data?.message);
+          const errorMessage = error?.error?.data?.message || error.message;
+          toast.error(errorMessage);
         }
       },
     }),
 
-    // logout endpoint here
+    // logout endpoint
     logout: builder.mutation({
       query: () => ({
         url: 'users/logout',
@@ -41,12 +41,38 @@ export const authApi = apiSlice.injectEndpoints({
           const result = await queryFulfilled;
           toast.success(result.data.message);
         } catch (error: any) {
-          toast.error(error?.error?.data?.message);
+          toast.error(error?.error?.data?.message || error.message);
+        }
+      },
+    }),
+
+    // sign-up endpoint
+    signUp: builder.mutation({
+      query: (data) => ({
+        url: 'users/register',
+        method: 'POST',
+        body: data,
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+
+          // setting logged data to redux state
+          dispatch(
+            userLoggedIn({
+              user: result.data.user,
+            })
+          );
+
+          toast.success(result.data.message);
+        } catch (error: any) {
+          const errorMessage = error?.error?.data?.message || error.message;
+          toast.error(errorMessage);
         }
       },
     }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } =
+export const { useLoginMutation, useLogoutMutation, useSignUpMutation } =
   authApi;
